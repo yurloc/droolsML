@@ -1,0 +1,7 @@
+role,experience,access
+admin,senior,allow
+guest,junior,deny
+contributor,junior,allow
+admin,senior,allow
+guest,senior,deny
+contributor,senior,allow

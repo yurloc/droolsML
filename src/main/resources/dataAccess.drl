@@ -1,0 +1,20 @@
+package org.nprentza;
+
+import org.nprentza.Agent
+
+global java.util.List allow;
+global java.util.List deny;
+
+rule AllowAdmin when
+	$a: Agent( role == "admin" )
+then
+    $a.setGrantAccess( true );
+	allow.add( $a.getId() );
+end
+
+rule DenyGuest when
+	$a: Agent( role == "guest" )
+then
+    $a.setGrantAccess( false );
+	deny.add( $a.getId() );
+end
