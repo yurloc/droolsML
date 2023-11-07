@@ -23,7 +23,7 @@
         </dependency>
 
         <dependency>
-            <groupId>emla.org</groupId>
+            <groupId>org.emla</groupId>
             <artifactId>emla</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>

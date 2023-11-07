@@ -1,8 +1,8 @@
 package org.nprentza;
 
-import emla.dbcomponent.Dataset;
-import emla.learning.oner.Frequency;
-import emla.learning.oner.FrequencyTable;
+import org.emla.dbcomponent.Dataset;
+import org.emla.learning.Frequency;
+import org.emla.learning.FrequencyTable;
 import org.drools.model.codegen.ExecutableModelProject;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
@@ -104,16 +104,4 @@ public class DroolsAgentApp {
         rule += "end";
         return rule;
     }
-
-    /*
-
-    rule AllowContributor when
-	    $a: Agent( role == "contributor" )
-    then
-        $a.setGrantAccess( true );
-	    grant.add( $a.getId() );
-    end
-
-     */
-
 }
