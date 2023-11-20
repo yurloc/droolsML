@@ -1,5 +1,12 @@
 package org.nprentza;
 
+import org.drools.io.ReaderResource;
+import org.drools.verifier.Verifier;
+import org.drools.verifier.builder.VerifierBuilderFactory;
+import org.drools.verifier.data.VerifierReport;
+import org.drools.verifier.report.components.MissingRange;
+import org.drools.verifier.report.components.Severity;
+import org.drools.verifier.report.components.VerifierMessageBase;
 import org.emla.dbcomponent.Dataset;
 import org.emla.learning.Frequency;
 import org.emla.learning.FrequencyTable;
@@ -9,6 +16,7 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
 
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,6 +69,31 @@ public class DroolsAgentApp {
     }
 
     public DrlAssessment evaluateAgentRequests(){
+        Verifier verifier = VerifierBuilderFactory.newVerifierBuilder().newVerifier();
+        verifier.addResourcesToVerify(new ReaderResource(new StringReader(DRL)), ResourceType.DRL);
+        verifier.fireAnalysis();
+        VerifierReport result = verifier.getResult();
+
+        System.out.println("===== NOTES =====");
+        for (VerifierMessageBase message : result.getBySeverity(Severity.NOTE)) {
+            System.out.println(message);
+        }
+
+        System.out.println("===== WARNS =====");
+        for (VerifierMessageBase message : result.getBySeverity(Severity.WARNING)) {
+            System.out.println(message);
+        }
+
+        System.out.println("===== ERRORS =====");
+        for (VerifierMessageBase message : result.getBySeverity(Severity.ERROR)) {
+            System.out.println(message);
+        }
+
+        System.out.println("===== GAPS =====");
+        for (MissingRange message : result.getRangeCheckCauses()) {
+            System.out.println(message);
+        }
+
         KieSession kieSession = kieBase.newKieSession();
         allow = new ArrayList<>();
         kieSession.setGlobal("allow", allow);

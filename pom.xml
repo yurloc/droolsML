@@ -23,6 +23,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-verifier-drl</artifactId>
+            <version>${drools.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.emla</groupId>
             <artifactId>emla</artifactId>
             <version>0.0.1-SNAPSHOT</version>
