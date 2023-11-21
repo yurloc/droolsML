@@ -33,7 +33,7 @@ public class DroolsAgentApp {
 
     public DroolsAgentApp(){
         //kieBase = new KieHelper().addFromClassPath("/dataAccess.drl").build(ExecutableModelProject.class);
-        kieBase = new KieHelper().addContent(DRL, ResourceType.DRL).build(ExecutableModelProject.class);
+        kieBase = new KieHelper().addContent(DRL, "org/nprentza/dataAccess.drl").build(ExecutableModelProject.class);
     }
 
     public void updateDrl(List<FrequencyTable> frequencyTables, Frequency bestFrequency){
