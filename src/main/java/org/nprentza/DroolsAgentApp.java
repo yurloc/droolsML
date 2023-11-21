@@ -27,22 +27,9 @@ public class DroolsAgentApp {
     private List<Integer> allow;
     private List<Integer> deny;
 
-    private String DRL =
-            "import " + Agent.class.getCanonicalName() + ";" +
-                    "global java.util.List allow;" +
-                    "global java.util.List deny;" +
-                    "rule 'AllowAdmin' when\n" +
-                    "  $a: Agent( role == 'admin' ) \n" +
-                    "then\n" +
-                    "  $a.setGrantAccess( true );\n" +
-                    "  allow.add( $a.getId() );\n" +
-                    "end\n" +
-                    "rule 'DenyGuest' when\n" +
-                    "  $a: Agent( role == 'guest' ) \n" +
-                    "then\n" +
-                    "  $a.setGrantAccess( false );\n" +
-                    "  deny.add( $a.getId() );\n" +
-                    "end";
+    private String DRL = DrlConverter.preamble()
+            + DrlConverter.rule("AllowAdmin", "role", "admin", "allow")
+            + DrlConverter.rule("DenyGuest", "role", "guest", "deny");
 
     public DroolsAgentApp(){
         //kieBase = new KieHelper().addFromClassPath("/dataAccess.drl").build(ExecutableModelProject.class);
@@ -54,7 +41,7 @@ public class DroolsAgentApp {
             if bestFrequency condition is not already in the drl then add it
             else    process frequencyTables to find the next best frequency and repeat the process
          */
-        DRL += "\n" + FrequencyToDrlRule(bestFrequency);
+        DRL += "\n" + DrlConverter.frequencyToDrlRule(bestFrequency);
         kieBase = new KieHelper().addContent(DRL, ResourceType.DRL).build(ExecutableModelProject.class);
     }
 
@@ -62,7 +49,8 @@ public class DroolsAgentApp {
         this.agentRequests = new ArrayList<>();
 
         for (int i=0; i<ds.getRowCout(); i++) {
-            this.agentRequests.add(new Agent(ds.getDsTable().row(i).getInt("caseID"),
+            this.agentRequests.add(Agent.fromRawData(
+                    ds.getDsTable().row(i).getInt("caseID"),
                     ds.getDsTable().row(i).getString("role"),
                     ds.getDsTable().row(i).getString("experience")));
         }
@@ -121,20 +109,5 @@ public class DroolsAgentApp {
         }
 
         return caseIdsNotCovered;
-    }
-
-    private String FrequencyToDrlRule(Frequency frequency){
-        String rule = " rule ";
-        rule += "'" + frequency.getBestTargetValue() + frequency.getPredictorValues().getRight() + "' when \n";
-        rule += "       $a: Agent( " + frequency.getPredictorValues().getLeft() + " == '" + frequency.getPredictorValues().getRight() + "' )\n" +
-                "   then\n" +
-                "       $a.setGrantAccess( " + (frequency.getBestTargetValue().equals("allow") ? " true " : " false ") + "); \n";
-        if (frequency.getBestTargetValue().equals("allow")) {
-            rule += "       allow.add( $a.getId() ); \n";
-        }else {
-            rule += "       deny.add( $a.getId() ); \n";
-        }
-        rule += "end";
-        return rule;
     }
 }
