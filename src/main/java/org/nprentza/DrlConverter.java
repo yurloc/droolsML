@@ -36,6 +36,15 @@ public final class DrlConverter {
                 "end\n";
     }
 
+    public static String rule(String ruleName, String field, String operator, Object value, String decision) {
+        return "rule '" + ruleName + "' when\n" +
+                "  $a: Agent( " + arithmeticOperator(field, operator, value) + " ) \n" +
+                "then\n" +
+                "  $a.setGrantAccess( " + grantAccess(decision) + " );\n" +
+                "  " + decision + ".add( $a.getId() );\n" +
+                "end\n";
+    }
+
     private static String equalityCheck(String field, String value) {
         if (field.equals("role")) {
             return "role == " + AgentRole.class.getSimpleName() + "." + AgentRole.valueOf(value.toUpperCase()).name();
@@ -43,6 +52,12 @@ public final class DrlConverter {
         return field + " == " + value;
     }
 
+    private static String arithmeticOperator(String field, String operator, Object value){
+        if (field.equals("age") && (value instanceof Integer) ){
+            return "age " + operator + " " + (int) value;
+        }
+        return field + " " + operator + " " + value;
+    }
     private static boolean grantAccess(String decision) {
         return decision.equals("allow");
     }

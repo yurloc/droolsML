@@ -4,17 +4,19 @@ public class Agent {
     private int id;
     private AgentRole role;    // admin, guest
     private String experience;
+    private int age;
     private boolean grantAccess;
 
-    public static Agent fromRawData(int id, String role, String experience){
+    public static Agent fromRawData(int id, String role, String experience, int age){
         AgentRole agentRole = AgentRole.valueOf(role.toUpperCase());
-        return new Agent(id, agentRole, experience);
+        return new Agent(id, agentRole, experience,age);
     }
 
-    private Agent(int id, AgentRole role, String experience){
+    private Agent(int id, AgentRole role, String experience, int age){
         this.id = id;
         this.role = role;
         this.experience = experience;
+        this.age = age;
     }
 
     public int getId(){return this.id;}
@@ -27,4 +29,7 @@ public class Agent {
 
     public void setGrantAccess(boolean access){this.grantAccess=access;}
     public boolean getGrandAccess(){return this.grantAccess;}
+
+    public void setAge(int age){this.age=age;}
+    public int getAge(){return this.age;}
 }

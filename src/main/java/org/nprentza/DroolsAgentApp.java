@@ -29,7 +29,8 @@ public class DroolsAgentApp {
 
     private String DRL = DrlConverter.preamble()
             + DrlConverter.rule("AllowAdmin", "role", "admin", "allow")
-            + DrlConverter.rule("DenyGuest", "role", "guest", "deny");
+            + DrlConverter.rule("DenyGuest", "role", "guest", "deny")
+            + DrlConverter.rule("DenyChildren", "age", "<",19, "deny");
 
     public DroolsAgentApp(){
         //kieBase = new KieHelper().addFromClassPath("/dataAccess.drl").build(ExecutableModelProject.class);
@@ -52,7 +53,8 @@ public class DroolsAgentApp {
             this.agentRequests.add(Agent.fromRawData(
                     ds.getDsTable().row(i).getInt("caseID"),
                     ds.getDsTable().row(i).getString("role"),
-                    ds.getDsTable().row(i).getString("experience")));
+                    ds.getDsTable().row(i).getString("experience"),
+                    ds.getDsTable().row(i).getInt("age")));
         }
     }
 
@@ -80,6 +82,9 @@ public class DroolsAgentApp {
         System.out.println("===== GAPS =====");
         for (MissingRange message : result.getRangeCheckCauses()) {
             System.out.println(message);
+            System.out.println("    >> MissingRange object analysis: [.field = " + message.getField().getName() + "] " +
+                    "[.operator = '" + message.getOperator().getOperatorString() + "'] " +
+                    "[.getValueAsString() = " + message.getValueAsString()+"]");
         }
 
         KieSession kieSession = kieBase.newKieSession();
